@@ -41,7 +41,7 @@ _subscriptions
 if
 type(
 class
-.__init
+._init
 )
 ==
 'function'
