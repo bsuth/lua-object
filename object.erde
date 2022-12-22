@@ -60,7 +60,7 @@ function Object:rawset(key, value) {
 function Object:set(key, value) {
   local setter = self._class["_set_{key}"]
   if type(setter) == 'function' {
-    setter(self, key, value)
+    setter(self, value)
   } else {
     Object.rawset(self, key, value)
   }
