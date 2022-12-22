@@ -15,7 +15,7 @@ function ObjectMT:__call(class = {}, ...) {
   if type(class._init) == 'function' {
     -- Do not invoke getters, setters, or  change events until after initializtion
     setmetatable(instance, { __index = Object.rawget, __newindex = instance._proxy })
-    class.__init(instance, ...)
+    class._init(instance, ...)
   }
 
   setmetatable(instance, { __index = Object.get, __newindex = Object.set })

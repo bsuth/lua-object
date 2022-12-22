@@ -1,14 +1,59 @@
 local Object = require('object')
 
+describe('creation', () -> {
+  spec('can construct', () -> {
+    assert.has_no.errors(() -> {
+      Object()
+      Object({})
+      Object({ _get_x = () -> 1 })
+    })
+  })
+
+  spec('can init', () -> {
+    local canInit = false
+    local initClassProperty = false
+
+    local TestObject = Object({
+      classProperty = 1,
+      _init = () => {
+        canInit = true
+        initClassProperty = self.classProperty
+        self.proxyProperty = 2
+      }
+    })
+
+    assert.are.equal(true, canInit)
+    assert.are.equal(TestObject._class.classProperty, initClassProperty)
+    assert.are.equal(2, TestObject._proxy.proxyProperty)
+  })
+
+  spec('do not call getters / setters on init', () -> {
+    local calledGetter = false
+    local calledSetter = false
+
+    local TestObject = Object({
+      _get_x = () -> { calledGetter = true }
+      _set_x = () -> { calledSetter = true }
+      _init = () => {
+        self.x = 1
+        return self.x
+      }
+    })
+
+    assert.are.equal(false, calledGetter)
+    assert.are.equal(false, calledSetter)
+  })
+})
+
 describe('getters', () -> {
   local TestObject = Object({
-    class_property = 1,
+    classProperty = 1,
     publish = 2,
-    instance_default = 3,
+    instanceDefault = 3,
     _get_x = () -> 4,
   })
 
-  TestObject.instance_default *= -1
+  TestObject.instanceDefault *= -1
 
   spec('has Object properties', () -> {
     assert.are.equal('function', type(TestObject.rawget))
@@ -18,7 +63,7 @@ describe('getters', () -> {
   })
 
   spec('has class properties', () -> {
-    assert.are.equal(1, TestObject.class_property)
+    assert.are.equal(1, TestObject.classProperty)
   })
 
   spec('prioritizes class over Object properties', () -> {
@@ -26,7 +71,7 @@ describe('getters', () -> {
   })
 
   spec('prioritizes instance over class properties', () -> {
-    assert.are.equal(-3, TestObject.instance_default)
+    assert.are.equal(-3, TestObject.instanceDefault)
   })
 
   spec('has custom getter', () -> {
@@ -36,7 +81,7 @@ describe('getters', () -> {
 
 describe('setters', () -> {
   local TestObject = Object({
-    class_property = 1,
+    classProperty = 1,
     _set_y = newY => self:rawset('y', newY + 1),
   })
 
@@ -46,9 +91,9 @@ describe('setters', () -> {
   })
 
   spec('does not override class properties', () -> {
-    TestObject.class_property *= -1
-    assert.are.equal(-1, TestObject.class_property)
-    assert.are.equal(1, TestObject._class.class_property)
+    TestObject.classProperty *= -1
+    assert.are.equal(-1, TestObject.classProperty)
+    assert.are.equal(1, TestObject._class.classProperty)
   })
 
   spec('has custom setter', () -> {
@@ -58,10 +103,12 @@ describe('setters', () -> {
 })
 
 describe('pubsub', () -> {
-  local TestObject = Object({
-    class_property = 1,
-    publish = 2,
-    instance_default = 3,
-    _get_x = () -> 4,
+  local TestObject = Object({})
+
+  spec('setter triggers change event', () -> {
+    local changed = false
+    TestObject:subscribe('change_x', () -> { changed = true })
+    TestObject.x = 1
+    assert.are.equal(true, changed)
   })
 })

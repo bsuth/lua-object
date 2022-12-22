@@ -63,7 +63,7 @@ instance
 }
 )
 class
-.__init(
+._init(
 instance
 ,
 ...
