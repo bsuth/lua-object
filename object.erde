@@ -5,7 +5,7 @@
 local ObjectMT = {}
 local Object = setmetatable({}, ObjectMT)
 
-function ObjectMT:__call(class, ...) {
+function ObjectMT:__call(class = {}, ...) {
   local instance = {
     _class = class,
     _proxy = {},

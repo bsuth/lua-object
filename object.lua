@@ -15,6 +15,10 @@ ObjectMT
 function
 ObjectMT:__call
 (class,...)
+if class == nil then class = 
+{
+}
+end
 local
 instance
 =
