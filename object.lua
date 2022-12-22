@@ -150,8 +150,6 @@ then
 return
 getter(
 self
-,
-key
 )
 else
 return

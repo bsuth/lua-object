@@ -43,7 +43,7 @@ function Object:rawget(key) {
 function Object:get(key) {
   local getter = self._class["_get_{key}"]
   if type(getter) == 'function' {
-    return getter(self, key)
+    return getter(self)
   } else {
     return Object.rawget(self, key)
   }
