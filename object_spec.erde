@@ -32,12 +32,12 @@ describe('creation', () -> {
     local calledSetter = false
 
     local TestObject = Object({
-      _get_x = () -> { calledGetter = true }
-      _set_x = () -> { calledSetter = true }
+      _get_x = () -> { calledGetter = true },
+      _set_x = () -> { calledSetter = true },
       _init = () => {
         self.x = 1
         return self.x
-      }
+      },
     })
 
     assert.are.equal(false, calledGetter)
@@ -103,12 +103,88 @@ describe('setters', () -> {
 })
 
 describe('pubsub', () -> {
-  local TestObject = Object({})
+  spec('has change events', () -> {
+    local emittedOverrideChangeEvent = false
+    local emittedNewKeyChangeEvent = false
+    local emittedExistingKeyChangeEvent = false
 
-  spec('setter triggers change event', () -> {
-    local changed = false
-    TestObject:subscribe('change_x', () -> { changed = true })
+    local TestObject = Object({ classKey = 0 })
+
+    TestObject:subscribe('change_classKey', () -> {
+      emittedOverrideChangeEvent = true
+    })
+
+    TestObject:subscribe('change_x', () -> {
+      if !emittedNewKeyChangeEvent {
+        emittedNewKeyChangeEvent = true
+      } else {
+        emittedExistingKeyChangeEvent = true
+      }
+    })
+
+    TestObject.classKey = 1
     TestObject.x = 1
-    assert.are.equal(true, changed)
+    TestObject.x = 2
+
+    assert.are.equal(true, emittedOverrideChangeEvent)
+    assert.are.equal(true, emittedNewKeyChangeEvent)
+    assert.are.equal(true, emittedExistingKeyChangeEvent)
+  })
+
+  spec('has custom events', () -> {
+    local emittedCustomEvent = false
+    local TestObject = Object()
+
+    TestObject:subscribe('myevent', () -> {
+      emittedCustomEvent = true
+    })
+
+    assert.are.equal(false, emittedCustomEvent)
+    TestObject:publish('myevent')
+    assert.are.equal(true, emittedCustomEvent)
+  })
+
+  spec('can pass custom event args', () -> {
+    local eventArg1, eventArg2 = 0, 0
+    local TestObject = Object()
+
+    TestObject:subscribe('myevent', (newEventArg1, newEventArg2) -> {
+      eventArg1, eventArg2 = newEventArg1, newEventArg2
+    })
+
+    assert.are.equal(0, eventArg1)
+    assert.are.equal(0, eventArg2)
+    TestObject:publish('myevent', 1, 2)
+    assert.are.equal(1, eventArg1)
+    assert.are.equal(2, eventArg2)
+  })
+
+  spec('has native handlers', () -> {
+    local emittedNativeHandler = false
+
+    local TestObject = Object({
+      _on_myevent = () => { emittedNativeHandler = true },
+    })
+
+    assert.are.equal(false, emittedNativeHandler)
+    TestObject:publish('myevent', 1, 2)
+    assert.are.equal(true, emittedNativeHandler)
+  })
+
+  spec('can pass native handler args', () -> {
+    local eventArg1, eventArg2 = 0, 0
+    local TestObject = Object()
+
+    local TestObject = Object({
+      _on_myevent = (newEventArg1, newEventArg2) => {
+        eventArg1, eventArg2 = newEventArg1, newEventArg2
+      },
+    })
+
+    assert.are.equal(0, eventArg1)
+    assert.are.equal(0, eventArg2)
+    TestObject:publish('myevent', 1, 2)
+    assert.are.equal(1, eventArg1)
+    assert.are.equal(2, eventArg2)
   })
 })
