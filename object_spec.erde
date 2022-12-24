@@ -46,16 +46,8 @@ describe('creation', () -> {
 })
 
 describe('getters', () -> {
-  local TestObject = Object({
-    classProperty = 1,
-    publish = 2,
-    instanceDefault = 3,
-    _get_x = () -> 4,
-  })
-
-  TestObject.instanceDefault *= -1
-
   spec('has Object properties', () -> {
+    local TestObject = Object()
     assert.are.equal('function', type(TestObject.rawget))
     assert.are.equal('function', type(TestObject.get))
     assert.are.equal('function', type(TestObject.rawset))
@@ -63,40 +55,43 @@ describe('getters', () -> {
   })
 
   spec('has class properties', () -> {
+    local TestObject = Object({ classProperty = 1 })
     assert.are.equal(1, TestObject.classProperty)
   })
 
   spec('prioritizes class over Object properties', () -> {
+    local TestObject = Object({ publish = 2 })
     assert.are.equal(2, TestObject.publish)
   })
 
   spec('prioritizes instance over class properties', () -> {
+    local TestObject = Object({ instanceDefault = 3 })
+    TestObject.instanceDefault *= -1
     assert.are.equal(-3, TestObject.instanceDefault)
   })
 
   spec('has custom getter', () -> {
+    local TestObject = Object({ _get_x = () -> 4 })
     assert.are.equal(4, TestObject.x)
   })
 })
 
 describe('setters', () -> {
-  local TestObject = Object({
-    classProperty = 1,
-    _set_y = newY => self:rawset('y', newY + 1),
-  })
-
   spec('stores properties in proxy', () -> {
+    local TestObject = Object()
     TestObject.x = 1
     assert.are.equal(1, TestObject._proxy.x)
   })
 
   spec('does not override class properties', () -> {
+    local TestObject = Object({ classProperty = 1 })
     TestObject.classProperty *= -1
     assert.are.equal(-1, TestObject.classProperty)
     assert.are.equal(1, TestObject._class.classProperty)
   })
 
   spec('has custom setter', () -> {
+    local TestObject = Object({ _set_y = newY => self:rawset('y', newY + 1) })
     TestObject.y = 1
     assert.are.equal(2, TestObject.y)
   })
