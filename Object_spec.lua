@@ -2,7 +2,7 @@ local
 Object
 =
 require(
-'object'
+'Object'
 )
 describe(
 'creation'

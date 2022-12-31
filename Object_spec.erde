@@ -1,4 +1,4 @@
-local Object = require('object')
+local Object = require('Object')
 
 describe('creation', () -> {
   spec('can construct', () -> {
