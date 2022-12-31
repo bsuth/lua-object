@@ -26,23 +26,6 @@ describe('creation', () -> {
     assert.are.equal(TestObject._class.classProperty, initClassProperty)
     assert.are.equal(2, TestObject._proxy.proxyProperty)
   })
-
-  spec('do not call getters / setters on init', () -> {
-    local calledGetter = false
-    local calledSetter = false
-
-    local TestObject = Object({
-      _get_x = () -> { calledGetter = true },
-      _set_x = () -> { calledSetter = true },
-      _init = () => {
-        self.x = 1
-        return self.x
-      },
-    })
-
-    assert.are.equal(false, calledGetter)
-    assert.are.equal(false, calledSetter)
-  })
 })
 
 describe('getters', () -> {
@@ -95,25 +78,32 @@ describe('setters', () -> {
     TestObject.y = 1
     assert.are.equal(2, TestObject.y)
   })
+
+  spec('can prevent rawset publish', () -> {
+    local publishedChangeEvent = false
+    local TestObject = Object({ _on_change_x = () => { publishedChangeEvent = true }})
+    TestObject:rawset('x', 1, true)
+    assert.are.equal(false, publishedChangeEvent)
+  })
 })
 
 describe('pubsub', () -> {
   spec('has change events', () -> {
-    local emittedOverrideChangeEvent = false
-    local emittedNewKeyChangeEvent = false
-    local emittedExistingKeyChangeEvent = false
+    local publishedOverrideChangeEvent = false
+    local publishedNewKeyChangeEvent = false
+    local publishedExistingKeyChangeEvent = false
 
     local TestObject = Object({ classKey = 0 })
 
     TestObject:subscribe('change_classKey', () -> {
-      emittedOverrideChangeEvent = true
+      publishedOverrideChangeEvent = true
     })
 
     TestObject:subscribe('change_x', () -> {
-      if !emittedNewKeyChangeEvent {
-        emittedNewKeyChangeEvent = true
+      if !publishedNewKeyChangeEvent {
+        publishedNewKeyChangeEvent = true
       } else {
-        emittedExistingKeyChangeEvent = true
+        publishedExistingKeyChangeEvent = true
       }
     })
 
@@ -121,22 +111,22 @@ describe('pubsub', () -> {
     TestObject.x = 1
     TestObject.x = 2
 
-    assert.are.equal(true, emittedOverrideChangeEvent)
-    assert.are.equal(true, emittedNewKeyChangeEvent)
-    assert.are.equal(true, emittedExistingKeyChangeEvent)
+    assert.are.equal(true, publishedOverrideChangeEvent)
+    assert.are.equal(true, publishedNewKeyChangeEvent)
+    assert.are.equal(true, publishedExistingKeyChangeEvent)
   })
 
   spec('has custom events', () -> {
-    local emittedCustomEvent = false
+    local publishedCustomEvent = false
     local TestObject = Object()
 
     TestObject:subscribe('myevent', () -> {
-      emittedCustomEvent = true
+      publishedCustomEvent = true
     })
 
-    assert.are.equal(false, emittedCustomEvent)
+    assert.are.equal(false, publishedCustomEvent)
     TestObject:publish('myevent')
-    assert.are.equal(true, emittedCustomEvent)
+    assert.are.equal(true, publishedCustomEvent)
   })
 
   spec('can pass custom event args', () -> {
@@ -155,15 +145,15 @@ describe('pubsub', () -> {
   })
 
   spec('has native handlers', () -> {
-    local emittedNativeHandler = false
+    local publishedNativeHandler = false
 
     local TestObject = Object({
-      _on_myevent = () => { emittedNativeHandler = true },
+      _on_myevent = () => { publishedNativeHandler = true },
     })
 
-    assert.are.equal(false, emittedNativeHandler)
+    assert.are.equal(false, publishedNativeHandler)
     TestObject:publish('myevent', 1, 2)
-    assert.are.equal(true, emittedNativeHandler)
+    assert.are.equal(true, publishedNativeHandler)
   })
 
   spec('can pass native handler args', () -> {

@@ -41,7 +41,7 @@ local myobject = Object(MyClass, "hello", "world") -- hello world
 
 ### `Class:_init(...)`
 
-The class constructor. The arguments passed here are directly proxied from the `Object(class, ...)` call. Class defined [getters](#class_get_xxx) and [setters](#class_set_xxxvalue) are _not_ called and `change_XXX` events are _not_ emitted.
+The class constructor. The arguments passed here are directly proxied from the `Object(class, ...)` call.
 
 ```lua
 local Object = require('object')
@@ -57,7 +57,7 @@ print(myobject.sum) -- 3
 
 ### `Class:_get_XXX()`
 
-Class defined getter on property `XXX`. When defined, accessing `myobject.XXX` will return the result from the getter. You can use [`Object:rawget`](#objectrawgetkey) to bypass getters. Getters are _not_ called in [`Class:_init`](#class_init).
+Class defined getter on property `XXX`. When defined, accessing `myobject.XXX` will return the result from the getter. You can use [`Object:rawget`](#objectrawgetkey) to bypass getters.
 
 ```lua
 local Object = require('object')
@@ -73,7 +73,7 @@ print(myobject.myprop) -- 42
 
 ### `Class:_set_XXX(value)`
 
-Class defined setter on property `XXX`. When defined, assigning `myobject.XXX = myvalue` will call the setter with `myvalue`. You can use [`Object:rawset`](#objectrawsetkey-value) to bypass setters. Setters are _not_ called in [`Class:_init`](#class_init). `change_XXX` events are _not_ automatically called after setters, but _are_ called in [`Object:rawset`](#objectrawsetkey-value).
+Class defined setter on property `XXX`. When defined, assigning `myobject.XXX = myvalue` will call the setter with `myvalue`. You can use [`Object:rawset`](#objectrawsetkey-value) to bypass setters. `change_XXX` events are _not_ automatically published after setters, but _are_ published in [`Object:rawset`](#objectrawsetkey-value).
 
 ```lua
 local Object = require('object')
@@ -128,9 +128,9 @@ print(myobject.myprop) -- 42
 print(myobject:rawget('myprop')) -- 24
 ```
 
-### `Object:rawset(key, value)`
+### `Object:rawset(key, value, noPublish)`
 
-Set the index of `key` to `value` _without_ invoking setters. Emits a `change_XXX` event (where XXX is the value of `key`) that passes the new value.
+Set the index of `key` to `value` _without_ invoking setters. If `noPublish` is not set to true, publishes a `change_XXX` event (where XXX is the value of `key`) that passes the new and old values.
 
 ```lua
 local Object = require('object')
@@ -145,6 +145,19 @@ myobject.myprop = 42
 print(myobject.myprop) -- 52
 myobject:rawset('myprop', 42)
 print(myobject.myprop) -- 42
+```
+
+```lua
+local Object = require('object')
+
+local MyClass = {}
+function MyClass:_on_change_myprop(newValue, oldValue)
+  print(newValue, oldValue)
+end
+
+local myobject = Object(MyClass)
+myobject:rawset('myprop', 42) -- 42 nil
+myobject:rawset('myprop', 24) -- 24 42
 ```
 
 ### `Object:publish(event, ...)`
