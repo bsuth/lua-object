@@ -10,166 +10,166 @@ describe('creation', () -> {
   })
 
   spec('can init', () -> {
-    local canInit = false
-    local initClassProperty = false
+    local can_init = false
+    local init_class_property = false
 
-    local TestObject = Object({
-      classProperty = 1,
+    local test_object = Object({
+      class_property = 1,
       _init = () => {
-        canInit = true
-        initClassProperty = self.classProperty
-        self.proxyProperty = 2
+        can_init = true
+        init_class_property = self.class_property
+        self.proxy_property = 2
       }
     })
 
-    assert.are.equal(true, canInit)
-    assert.are.equal(TestObject._class.classProperty, initClassProperty)
-    assert.are.equal(2, TestObject._proxy.proxyProperty)
+    assert.are.equal(true, can_init)
+    assert.are.equal(test_object._class.class_property, init_class_property)
+    assert.are.equal(2, test_object._proxy.proxy_property)
   })
 })
 
 describe('getters', () -> {
   spec('has Object properties', () -> {
-    local TestObject = Object()
-    assert.are.equal('function', type(TestObject.rawget))
-    assert.are.equal('function', type(TestObject.get))
-    assert.are.equal('function', type(TestObject.rawset))
-    assert.are.equal('function', type(TestObject.set))
+    local test_object = Object()
+    assert.are.equal('function', type(test_object.rawget))
+    assert.are.equal('function', type(test_object.get))
+    assert.are.equal('function', type(test_object.rawset))
+    assert.are.equal('function', type(test_object.set))
   })
 
   spec('has class properties', () -> {
-    local TestObject = Object({ classProperty = 1 })
-    assert.are.equal(1, TestObject.classProperty)
+    local test_object = Object({ class_property = 1 })
+    assert.are.equal(1, test_object.class_property)
   })
 
   spec('prioritizes class over Object properties', () -> {
-    local TestObject = Object({ publish = 2 })
-    assert.are.equal(2, TestObject.publish)
+    local test_object = Object({ publish = 2 })
+    assert.are.equal(2, test_object.publish)
   })
 
   spec('prioritizes instance over class properties', () -> {
-    local TestObject = Object({ instanceDefault = 3 })
-    TestObject.instanceDefault *= -1
-    assert.are.equal(-3, TestObject.instanceDefault)
+    local test_object = Object({ instance_default = 3 })
+    test_object.instance_default *= -1
+    assert.are.equal(-3, test_object.instance_default)
   })
 
   spec('has custom getter', () -> {
-    local TestObject = Object({ _get_x = () -> 4 })
-    assert.are.equal(4, TestObject.x)
+    local test_object = Object({ _get_x = () -> 4 })
+    assert.are.equal(4, test_object.x)
   })
 })
 
 describe('setters', () -> {
   spec('stores properties in proxy', () -> {
-    local TestObject = Object()
-    TestObject.x = 1
-    assert.are.equal(1, TestObject._proxy.x)
+    local test_object = Object()
+    test_object.x = 1
+    assert.are.equal(1, test_object._proxy.x)
   })
 
   spec('does not override class properties', () -> {
-    local TestObject = Object({ classProperty = 1 })
-    TestObject.classProperty *= -1
-    assert.are.equal(-1, TestObject.classProperty)
-    assert.are.equal(1, TestObject._class.classProperty)
+    local test_object = Object({ class_property = 1 })
+    test_object.class_property *= -1
+    assert.are.equal(-1, test_object.class_property)
+    assert.are.equal(1, test_object._class.class_property)
   })
 
   spec('has custom setter', () -> {
-    local TestObject = Object({ _set_y = newY => self:rawset('y', newY + 1) })
-    TestObject.y = 1
-    assert.are.equal(2, TestObject.y)
+    local test_object = Object({ _set_y = new_y => self:rawset('y', new_y + 1) })
+    test_object.y = 1
+    assert.are.equal(2, test_object.y)
   })
 
   spec('can prevent rawset publish', () -> {
-    local publishedChangeEvent = false
-    local TestObject = Object({ _on_change_x = () => { publishedChangeEvent = true }})
-    TestObject:rawset('x', 1, true)
-    assert.are.equal(false, publishedChangeEvent)
+    local published_change_event = false
+    local test_object = Object({ _on_change_x = () => { published_change_event = true }})
+    test_object:rawset('x', 1, true)
+    assert.are.equal(false, published_change_event)
   })
 })
 
 describe('pubsub', () -> {
   spec('has change events', () -> {
-    local publishedOverrideChangeEvent = false
-    local publishedNewKeyChangeEvent = false
-    local publishedExistingKeyChangeEvent = false
+    local published_override_change_event = false
+    local published_new_key_change_event = false
+    local published_existing_key_change_event = false
 
-    local TestObject = Object({ classKey = 0 })
+    local test_object = Object({ class_key = 0 })
 
-    TestObject:subscribe('change_classKey', () -> {
-      publishedOverrideChangeEvent = true
+    test_object:subscribe('change_class_key', () -> {
+      published_override_change_event = true
     })
 
-    TestObject:subscribe('change_x', () -> {
-      if !publishedNewKeyChangeEvent {
-        publishedNewKeyChangeEvent = true
+    test_object:subscribe('change_x', () -> {
+      if !published_new_key_change_event {
+        published_new_key_change_event = true
       } else {
-        publishedExistingKeyChangeEvent = true
+        published_existing_key_change_event = true
       }
     })
 
-    TestObject.classKey = 1
-    TestObject.x = 1
-    TestObject.x = 2
+    test_object.class_key = 1
+    test_object.x = 1
+    test_object.x = 2
 
-    assert.are.equal(true, publishedOverrideChangeEvent)
-    assert.are.equal(true, publishedNewKeyChangeEvent)
-    assert.are.equal(true, publishedExistingKeyChangeEvent)
+    assert.are.equal(true, published_override_change_event)
+    assert.are.equal(true, published_new_key_change_event)
+    assert.are.equal(true, published_existing_key_change_event)
   })
 
   spec('has custom events', () -> {
-    local publishedCustomEvent = false
-    local TestObject = Object()
+    local published_custom_event = false
+    local test_object = Object()
 
-    TestObject:subscribe('myevent', () -> {
-      publishedCustomEvent = true
+    test_object:subscribe('myevent', () -> {
+      published_custom_event = true
     })
 
-    assert.are.equal(false, publishedCustomEvent)
-    TestObject:publish('myevent')
-    assert.are.equal(true, publishedCustomEvent)
+    assert.are.equal(false, published_custom_event)
+    test_object:publish('myevent')
+    assert.are.equal(true, published_custom_event)
   })
 
   spec('can pass custom event args', () -> {
-    local eventArg1, eventArg2 = 0, 0
-    local TestObject = Object()
+    local event_arg_1, event_arg_2 = 0, 0
+    local test_object = Object()
 
-    TestObject:subscribe('myevent', (newEventArg1, newEventArg2) -> {
-      eventArg1, eventArg2 = newEventArg1, newEventArg2
+    test_object:subscribe('myevent', (new_event_arg_1, new_event_arg_2) -> {
+      event_arg_1, event_arg_2 = new_event_arg_1, new_event_arg_2
     })
 
-    assert.are.equal(0, eventArg1)
-    assert.are.equal(0, eventArg2)
-    TestObject:publish('myevent', 1, 2)
-    assert.are.equal(1, eventArg1)
-    assert.are.equal(2, eventArg2)
+    assert.are.equal(0, event_arg_1)
+    assert.are.equal(0, event_arg_2)
+    test_object:publish('myevent', 1, 2)
+    assert.are.equal(1, event_arg_1)
+    assert.are.equal(2, event_arg_2)
   })
 
   spec('has native handlers', () -> {
-    local publishedNativeHandler = false
+    local published_native_handler = false
 
-    local TestObject = Object({
-      _on_myevent = () => { publishedNativeHandler = true },
+    local test_object = Object({
+      _on_myevent = () => { published_native_handler = true },
     })
 
-    assert.are.equal(false, publishedNativeHandler)
-    TestObject:publish('myevent', 1, 2)
-    assert.are.equal(true, publishedNativeHandler)
+    assert.are.equal(false, published_native_handler)
+    test_object:publish('myevent', 1, 2)
+    assert.are.equal(true, published_native_handler)
   })
 
   spec('can pass native handler args', () -> {
-    local eventArg1, eventArg2 = 0, 0
-    local TestObject = Object()
+    local event_arg_1, event_arg_2 = 0, 0
+    local test_object = Object()
 
-    local TestObject = Object({
-      _on_myevent = (newEventArg1, newEventArg2) => {
-        eventArg1, eventArg2 = newEventArg1, newEventArg2
+    local test_object = Object({
+      _on_myevent = (new_event_arg_1, new_event_arg_2) => {
+        event_arg_1, event_arg_2 = new_event_arg_1, new_event_arg_2
       },
     })
 
-    assert.are.equal(0, eventArg1)
-    assert.are.equal(0, eventArg2)
-    TestObject:publish('myevent', 1, 2)
-    assert.are.equal(1, eventArg1)
-    assert.are.equal(2, eventArg2)
+    assert.are.equal(0, event_arg_1)
+    assert.are.equal(0, event_arg_2)
+    test_object:publish('myevent', 1, 2)
+    assert.are.equal(1, event_arg_1)
+    assert.are.equal(2, event_arg_2)
   })
 })
