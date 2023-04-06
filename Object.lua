@@ -62,10 +62,12 @@ getter
 self
 ._class
 [
+(
 "_get_"
 ..
 tostring(
 key
+)
 )
 ]
 if
@@ -73,7 +75,9 @@ type(
 getter
 )
 ==
+(
 'function'
+)
 then
 return
 getter(
@@ -120,10 +124,12 @@ Object
 .publish(
 self
 ,
+(
 "change_"
 ..
 tostring(
 key
+)
 )
 ,
 value
@@ -141,10 +147,12 @@ setter
 self
 ._class
 [
+(
 "_set_"
 ..
 tostring(
 key
+)
 )
 ]
 if
@@ -152,7 +160,9 @@ type(
 setter
 )
 ==
+(
 'function'
+)
 then
 setter(
 self
@@ -179,10 +189,12 @@ native_handler
 self
 ._class
 [
+(
 "_on_"
 ..
 tostring(
 event
+)
 )
 ]
 if
@@ -190,7 +202,9 @@ type(
 native_handler
 )
 ==
+(
 'function'
+)
 then
 native_handler(
 self
@@ -370,7 +384,9 @@ class
 ._init
 )
 ==
+(
 'function'
+)
 then
 class
 ._init(
@@ -384,4 +400,5 @@ instance
 end
 return
 Object
+-- Compiled with Erde 0.5-1
 -- __ERDE_COMPILED__

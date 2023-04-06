@@ -2,14 +2,20 @@ local
 Object
 =
 require(
+(
 'Object'
 )
+)
 describe(
+(
 'creation'
+)
 ,
 function()
 spec(
+(
 'can construct'
+)
 ,
 function()
 assert
@@ -38,7 +44,9 @@ end
 end
 )
 spec(
+(
 'can init'
+)
 ,
 function()
 local
@@ -106,11 +114,15 @@ end
 end
 )
 describe(
+(
 'getters'
+)
 ,
 function()
 spec(
+(
 'has Object properties'
+)
 ,
 function()
 local
@@ -121,7 +133,9 @@ Object(
 assert
 .are
 .equal(
+(
 'function'
+)
 ,
 type(
 test_object
@@ -131,7 +145,9 @@ test_object
 assert
 .are
 .equal(
+(
 'function'
+)
 ,
 type(
 test_object
@@ -141,7 +157,9 @@ test_object
 assert
 .are
 .equal(
+(
 'function'
+)
 ,
 type(
 test_object
@@ -151,7 +169,9 @@ test_object
 assert
 .are
 .equal(
+(
 'function'
+)
 ,
 type(
 test_object
@@ -161,7 +181,9 @@ test_object
 end
 )
 spec(
+(
 'has class properties'
+)
 ,
 function()
 local
@@ -186,7 +208,9 @@ test_object
 end
 )
 spec(
+(
 'prioritizes class over Object properties'
+)
 ,
 function()
 local
@@ -211,7 +235,9 @@ test_object
 end
 )
 spec(
+(
 'prioritizes instance over class properties'
+)
 ,
 function()
 local
@@ -245,7 +271,9 @@ test_object
 end
 )
 spec(
+(
 'has custom getter'
+)
 ,
 function()
 local
@@ -275,11 +303,15 @@ end
 end
 )
 describe(
+(
 'setters'
+)
 ,
 function()
 spec(
+(
 'stores properties in proxy'
+)
 ,
 function()
 local
@@ -303,7 +335,9 @@ test_object
 end
 )
 spec(
+(
 'does not override class properties'
+)
 ,
 function()
 local
@@ -346,7 +380,9 @@ test_object
 end
 )
 spec(
+(
 'has custom setter'
+)
 ,
 function()
 local
@@ -360,7 +396,9 @@ function(self,new_y)
 return
 self
 :rawset(
+(
 'y'
+)
 ,
 new_y
 +
@@ -385,7 +423,9 @@ test_object
 end
 )
 spec(
+(
 'can prevent rawset publish'
+)
 ,
 function()
 local
@@ -409,7 +449,9 @@ end
 )
 test_object
 :rawset(
+(
 'x'
+)
 ,
 1
 ,
@@ -427,11 +469,15 @@ end
 end
 )
 describe(
+(
 'pubsub'
+)
 ,
 function()
 spec(
+(
 'has change events'
+)
 ,
 function()
 local
@@ -459,7 +505,9 @@ class_key
 )
 test_object
 :subscribe(
+(
 'change_class_key'
+)
 ,
 function()
 published_override_change_event
@@ -469,7 +517,9 @@ end
 )
 test_object
 :subscribe(
+(
 'change_x'
+)
 ,
 function()
 if
@@ -522,7 +572,9 @@ published_existing_key_change_event
 end
 )
 spec(
+(
 'has custom events'
+)
 ,
 function()
 local
@@ -536,7 +588,9 @@ Object(
 )
 test_object
 :subscribe(
+(
 'myevent'
+)
 ,
 function()
 published_custom_event
@@ -553,7 +607,9 @@ published_custom_event
 )
 test_object
 :publish(
+(
 'myevent'
+)
 )
 assert
 .are
@@ -565,7 +621,9 @@ published_custom_event
 end
 )
 spec(
+(
 'can pass custom event args'
+)
 ,
 function()
 local
@@ -583,7 +641,9 @@ Object(
 )
 test_object
 :subscribe(
+(
 'myevent'
+)
 ,
 function(new_event_arg_1,new_event_arg_2)
 event_arg_1
@@ -611,7 +671,9 @@ event_arg_2
 )
 test_object
 :publish(
+(
 'myevent'
+)
 ,
 1
 ,
@@ -634,7 +696,9 @@ event_arg_2
 end
 )
 spec(
+(
 'has native handlers'
+)
 ,
 function()
 local
@@ -665,7 +729,9 @@ published_native_handler
 )
 test_object
 :publish(
+(
 'myevent'
+)
 ,
 1
 ,
@@ -681,7 +747,9 @@ published_native_handler
 end
 )
 spec(
+(
 'can pass native handler args'
+)
 ,
 function()
 local
@@ -732,7 +800,9 @@ event_arg_2
 )
 test_object
 :publish(
+(
 'myevent'
+)
 ,
 1
 ,
@@ -756,4 +826,5 @@ end
 )
 end
 )
+-- Compiled with Erde 0.5-1
 -- __ERDE_COMPILED__
