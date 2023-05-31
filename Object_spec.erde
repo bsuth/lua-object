@@ -203,4 +203,17 @@ describe('pubsub', () -> {
     assert.are.equal(1, called_f2)
     assert.are.equal(2, called_f3)
   })
+
+  spec('can subscribe once', () -> {
+    local test_object = Object()
+
+    local counter = 0
+    local increment = () -> { counter += 1 }
+
+    test_object:once('test', increment)
+    test_object:publish('test')
+    assert.are.equal(1, counter)
+    test_object:publish('test')
+    assert.are.equal(1, counter)
+  })
 })
