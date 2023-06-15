@@ -369,6 +369,8 @@ event
 ,
 callback_wrapper
 )
+return
+callback_wrapper
 end
 local
 InstanceMT
