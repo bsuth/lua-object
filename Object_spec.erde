@@ -79,11 +79,18 @@ describe('setters', () -> {
     assert.are.equal(2, test_object.y)
   })
 
-  spec('can prevent rawset publish', () -> {
+  spec('rawset does not publish', () -> {
+    local published_change_event = false
+    local test_object = Object({ _on_change_x = () => { published_change_event = true }})
+    test_object:rawset('x', 1)
+    assert.are.equal(false, published_change_event)
+  })
+
+  spec('can force rawset publish', () -> {
     local published_change_event = false
     local test_object = Object({ _on_change_x = () => { published_change_event = true }})
     test_object:rawset('x', 1, true)
-    assert.are.equal(false, published_change_event)
+    assert.are.equal(true, published_change_event)
   })
 })
 

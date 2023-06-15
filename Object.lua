@@ -102,7 +102,7 @@ end
 end
 function
 Object:rawset
-(key,value,no_publish)
+(key,value,publish)
 local
 old_value
 =
@@ -120,8 +120,7 @@ key
 =
 value
 if
-not
-no_publish
+publish
 and
 old_value
 ~=
@@ -184,6 +183,8 @@ self
 key
 ,
 value
+,
+true
 )
 end
 end
