@@ -37,10 +37,13 @@ local myobject = Object(MyClass, "hello", "world") -- hello world
 - [`MyClass:_set_XXX(value)`](#myclass_set_xxxvalue)
 - [`MyClass:_on_XXX(...)`](#myclass_on_xxx)
 - [`Object:rawget(key)`](#objectrawgetkey)
+- [`Object:get(key)`](#objectgetkey)
 - [`Object:rawset(key, value, publish)`](#objectrawsetkey-value-publish)
+- [`Object:set(key, value)`](#objectsetkey-value)
 - [`Object:publish(event, ...)`](#objectpublishevent-)
 - [`Object:subscribe(event, callback)`](#objectsubscribeevent-callback)
 - [`Object:unsubscribe(event, callback)`](#objectunsubscribeevent-callback)
+- [`Object:once(event, callback)`](#objectonceevent-callback)
 
 ### `MyClass:_init(...)`
 
@@ -80,9 +83,8 @@ print(myobject.myprop) -- 42
 
 Class defined setter on property `XXX`. When defined, assigning
 `myobject.XXX = myvalue` will call the setter with `myvalue`. You can use
-[`Object:rawset`](#objectrawsetkey-value) to bypass setters. `change_XXX` events
-are _not_ automatically published after setters and must be published by the
-user if appropriate.
+[`Object:rawset`](#objectrawsetkey-value-publish) to bypass setters. `change_XXX` events
+are _not_ automatically published after custom setters and must be published manually.
 
 ```lua
 local Object = require('Object')
@@ -122,7 +124,7 @@ myobject:publish('myevent') -- emitted myevent
 
 ### `Object:rawget(key)`
 
-Get the value indexed by `key` from the object _without_ invoking getters. First
+Gets the value indexed by `key` from the object _without_ invoking getters. First
 checks for `key` in the object, then searches for `key` in the class, and
 finally defaults to indexing `Object` directy.
 
@@ -140,9 +142,22 @@ print(myobject.myprop) -- 42
 print(myobject:rawget('myprop')) -- 24
 ```
 
+### `Object:get(key)`
+
+The getter function for the object. Calling this is equivalent to simply accessing the key directly.
+
+```lua
+local Object = require('Object')
+local myobject = Object()
+
+-- equivalent
+print(myobject.mykey)
+print(myobject:get('mykey'))
+```
+
 ### `Object:rawset(key, value, publish)`
 
-Set the index of `key` to `value` _without_ invoking setters. If `publish` is
+Sets the index of `key` to `value` _without_ invoking setters. If `publish` is
 set to true, publishes a `change_XXX` event (where XXX is the value of `key`)
 that passes the new and old values.
 
@@ -165,8 +180,8 @@ print(myobject.myprop) -- 42
 local Object = require('Object')
 
 local MyClass = {}
-function MyClass:_on_change_myprop(newValue, oldValue)
-  print(newValue, oldValue)
+function MyClass:_on_change_myprop(new_value, old_value)
+  print(new_value, old_value)
 end
 
 local myobject = Object(MyClass)
@@ -174,9 +189,22 @@ myobject:rawset('myprop', 42, true) -- 42 nil
 myobject:rawset('myprop', 24, true) -- 24 42
 ```
 
+### `Object:set(key, value)`
+
+The setter function for the object. Calling this is equivalent to simply assigning the key directly.
+
+```lua
+local Object = require('Object')
+local myobject = Object()
+
+-- equivalent
+myobject.mykey = 42
+myobject:set('mykey', 42)
+```
+
 ### `Object:publish(event, ...)`
 
-Invoke all [subscribers](#objectsubscribeevent-callback) of `event`, passing in
+Invokes all [subscribers](#objectsubscribeevent-callback) of `event`, passing in
 the provided varargs to each subscription callback.
 
 ```lua
@@ -192,8 +220,9 @@ myobject:publish('myevent', 1, 2) -- 3
 
 ### `Object:subscribe(event, callback)`
 
-Add a callback to be called whenever `event` is [published](#objectpublishevent-).
+Adds a callback to be called whenever `event` is [published](#objectpublishevent-).
 Returns the callback itself (useful for [unsubscribing](#objectunsubscribeevent-callback)).
+The same function cannot be subscribed to the same event multiple times (no duplicate subscriptions).
 
 ```lua
 local Object = require('Object')
@@ -208,7 +237,7 @@ myobject:publish('myevent', 1, 2) -- 3
 
 ### `Object:unsubscribe(event, callback)`
 
-Remove a callback from being called when `event` is [published](#objectpublishevent-).
+Removes a callback from being called when `event` is [published](#objectpublishevent-).
 
 ```lua
 local Object = require('Object')
@@ -221,6 +250,28 @@ end)
 myobject:publish('myevent', 1, 2) -- 3
 myobject:unsubscribe('myevent', subscription)
 myobject:publish('myevent', 1, 2) -- nothing prints!
+```
+
+### `Object:once(event, callback)`
+
+Adds a callback to be called the next time `event` is [published](#objectpublishevent-).
+This callback only fires once and then immediately unsubscribes itself. Similarly to
+[Object:subscribe](#objectsubscribeevent-callback), this returns the subscribed function
+and can be removed via [Object:unsubscribe](#objectunsubscribeevent-callback) (note that
+the subscribed function is _not_ the same as `callback`). Unlike
+[Object:subscribe](#objectsubscribeevent-callback), the same callback may be registered
+multiple times.
+
+```lua
+local Object = require('Object')
+local myobject = Object()
+
+local subscription = myobject:once('myevent', function()
+  print('hello world')
+end)
+
+myobject:publish('myevent') -- hello world
+myobject:publish('myevent') -- nil
 ```
 
 ## Class.lua
