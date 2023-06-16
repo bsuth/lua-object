@@ -1,18 +1,15 @@
-local
-Object
+local Object
 =
 require(
 (
 'Object'
 )
 )
-local
-ClassMT
+local ClassMT
 =
 {
 }
-local
-Class
+local Class
 =
 setmetatable(
 {
@@ -20,12 +17,10 @@ setmetatable(
 ,
 ClassMT
 )
-local
-InstanceMT
+local InstanceMT
 =
 {
-__call
-=
+__call=
 function(self,...)
 return
 Object(
@@ -52,5 +47,5 @@ InstanceMT
 end
 return
 Class
--- Compiled with Erde 0.5-1
+-- Compiled with Erde 0.6.0-1
 -- __ERDE_COMPILED__

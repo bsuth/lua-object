@@ -1,5 +1,4 @@
-local
-Class
+local Class
 =
 require(
 (
@@ -16,8 +15,7 @@ assert
 .has_no
 .errors(
 function()
-Class(
-)
+Class()
 Class(
 {
 }
@@ -37,8 +35,7 @@ assert
 .equal(
 nil
 ,
-Class(
-)
+Class()
 .mycustomkey
 )
 assert
@@ -48,8 +45,7 @@ assert
 ,
 Class(
 {
-mycustomkey
-=
+mycustomkey=
 1
 ,
 }
@@ -64,25 +60,20 @@ spec(
 )
 ,
 function()
-local
-can_init
+local can_init
 =
 false
-local
-init_class_property
+local init_class_property
 =
 false
-local
-TestClass
+local TestClass
 =
 Class(
 {
-class_property
-=
+class_property=
 1
 ,
-_init
-=
+_init=
 function(self)
 can_init
 =
@@ -106,11 +97,9 @@ false
 ,
 can_init
 )
-local
-test_object
+local test_object
 =
-TestClass(
-)
+TestClass()
 assert
 .are
 .equal(
@@ -138,5 +127,5 @@ test_object
 )
 end
 )
--- Compiled with Erde 0.5-1
+-- Compiled with Erde 0.6.0-1
 -- __ERDE_COMPILED__

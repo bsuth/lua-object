@@ -1,17 +1,14 @@
-local
-unpack
+local unpack
 =
 unpack
 or
 table
 .unpack
-local
-ObjectMT
+local ObjectMT
 =
 {
 }
-local
-Object
+local Object
 =
 setmetatable(
 {
@@ -22,8 +19,7 @@ ObjectMT
 function
 Object:rawget
 (key)
-local
-proxy_value
+local proxy_value
 =
 self
 ._proxy
@@ -38,8 +34,7 @@ then
 return
 proxy_value
 end
-local
-class_value
+local class_value
 =
 self
 ._class
@@ -63,8 +58,7 @@ end
 function
 Object:get
 (key)
-local
-getter
+local getter
 =
 self
 ._class
@@ -103,8 +97,7 @@ end
 function
 Object:rawset
 (key,value,publish)
-local
-old_value
+local old_value
 =
 Object
 .rawget(
@@ -147,8 +140,7 @@ end
 function
 Object:set
 (key,value)
-local
-setter
+local setter
 =
 self
 ._class
@@ -191,8 +183,7 @@ end
 function
 Object:publish
 (event,...)
-local
-native_handler
+local native_handler
 =
 self
 ._class
@@ -372,17 +363,14 @@ callback_wrapper
 return
 callback_wrapper
 end
-local
-InstanceMT
+local InstanceMT
 =
 {
-__index
-=
+__index=
 Object
 .get
 ,
-__newindex
-=
+__newindex=
 Object
 .set
 ,
@@ -394,22 +382,18 @@ if class == nil then class =
 {
 }
 end
-local
-instance
+local instance
 =
 setmetatable(
 {
-_class
-=
+_class=
 class
 ,
-_proxy
-=
+_proxy=
 {
 }
 ,
-_subscriptions
-=
+_subscriptions=
 {
 }
 ,
@@ -439,5 +423,5 @@ instance
 end
 return
 Object
--- Compiled with Erde 0.5-1
+-- Compiled with Erde 0.6.0-1
 -- __ERDE_COMPILED__

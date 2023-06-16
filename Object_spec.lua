@@ -1,5 +1,4 @@
-local
-Object
+local Object
 =
 require(
 (
@@ -22,16 +21,14 @@ assert
 .has_no
 .errors(
 function()
-Object(
-)
+Object()
 Object(
 {
 }
 )
 Object(
 {
-_get_x
-=
+_get_x=
 function()
 return
 1
@@ -49,25 +46,20 @@ spec(
 )
 ,
 function()
-local
-can_init
+local can_init
 =
 false
-local
-init_class_property
+local init_class_property
 =
 false
-local
-test_object
+local test_object
 =
 Object(
 {
-class_property
-=
+class_property=
 1
 ,
-_init
-=
+_init=
 function(self)
 can_init
 =
@@ -125,11 +117,9 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
-Object(
-)
+Object()
 assert
 .are
 .equal(
@@ -186,13 +176,11 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
 Object(
 {
-class_property
-=
+class_property=
 1
 ,
 }
@@ -213,13 +201,11 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
 Object(
 {
-publish
-=
+publish=
 2
 ,
 }
@@ -240,13 +226,11 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
 Object(
 {
-instance_default
-=
+instance_default=
 3
 ,
 }
@@ -276,13 +260,11 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
 Object(
 {
-_get_x
-=
+_get_x=
 function()
 return
 4
@@ -314,11 +296,9 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
-Object(
-)
+Object()
 test_object
 .x
 =
@@ -340,13 +320,11 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
 Object(
 {
-class_property
-=
+class_property=
 1
 ,
 }
@@ -385,13 +363,11 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
 Object(
 {
-_set_y
-=
+_set_y=
 function(self,new_y)
 return
 self
@@ -428,17 +404,14 @@ spec(
 )
 ,
 function()
-local
-published_change_event
+local published_change_event
 =
 false
-local
-test_object
+local test_object
 =
 Object(
 {
-_on_change_x
-=
+_on_change_x=
 function(self)
 published_change_event
 =
@@ -470,17 +443,14 @@ spec(
 )
 ,
 function()
-local
-published_change_event
+local published_change_event
 =
 false
-local
-test_object
+local test_object
 =
 Object(
 {
-_on_change_x
-=
+_on_change_x=
 function(self)
 published_change_event
 =
@@ -522,25 +492,20 @@ spec(
 )
 ,
 function()
-local
-published_override_change_event
+local published_override_change_event
 =
 false
-local
-published_new_key_change_event
+local published_new_key_change_event
 =
 false
-local
-published_existing_key_change_event
+local published_existing_key_change_event
 =
 false
-local
-test_object
+local test_object
 =
 Object(
 {
-class_key
-=
+class_key=
 0
 ,
 }
@@ -619,15 +584,12 @@ spec(
 )
 ,
 function()
-local
-published_custom_event
+local published_custom_event
 =
 false
-local
-test_object
+local test_object
 =
-Object(
-)
+Object()
 test_object
 :subscribe(
 (
@@ -668,19 +630,14 @@ spec(
 )
 ,
 function()
-local
-event_arg_1
-,
-event_arg_2
+local event_arg_1,event_arg_2
 =
 0
 ,
 0
-local
-test_object
+local test_object
 =
-Object(
-)
+Object()
 test_object
 :subscribe(
 (
@@ -743,17 +700,14 @@ spec(
 )
 ,
 function()
-local
-published_native_handler
+local published_native_handler
 =
 false
-local
-test_object
+local test_object
 =
 Object(
 {
-_on_myevent
-=
+_on_myevent=
 function(self)
 published_native_handler
 =
@@ -794,26 +748,19 @@ spec(
 )
 ,
 function()
-local
-event_arg_1
-,
-event_arg_2
+local event_arg_1,event_arg_2
 =
 0
 ,
 0
-local
-test_object
+local test_object
 =
-Object(
-)
-local
-test_object
+Object()
+local test_object
 =
 Object(
 {
-_on_myevent
-=
+_on_myevent=
 function(self,new_event_arg_1,new_event_arg_2)
 event_arg_1
 ,
@@ -872,25 +819,19 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
-Object(
-)
-local
-called_f1
+Object()
+local called_f1
 =
 0
-local
-called_f2
+local called_f2
 =
 0
-local
-called_f3
+local called_f3
 =
 0
-local
-f1
+local f1
 =
 function()
 called_f1
@@ -899,7 +840,6 @@ called_f1
 +
 1
 end
-local
 function
 f2
 ()
@@ -917,8 +857,7 @@ test_object
 f2
 )
 end
-local
-f3
+local f3
 =
 function()
 called_f3
@@ -1013,17 +952,13 @@ spec(
 )
 ,
 function()
-local
-test_object
+local test_object
 =
-Object(
-)
-local
-counter
+Object()
+local counter
 =
 0
-local
-increment
+local increment
 =
 function()
 counter
@@ -1070,5 +1005,5 @@ end
 )
 end
 )
--- Compiled with Erde 0.5-1
+-- Compiled with Erde 0.6.0-1
 -- __ERDE_COMPILED__
