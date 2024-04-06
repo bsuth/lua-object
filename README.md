@@ -3,9 +3,6 @@
 Minimalistic approach to OOP by instantiating objects directly from user-defined
 classes. Works with Lua 5.1+ and LuaJIT.
 
-Only `Object.lua` is required. The source file (`Object.erde`) is written in
-[Erde](https://erde-lang.github.io/) and compiled to Lua.
-
 ## Usage
 
 The module returns a table, which can be called in order to create a new object:

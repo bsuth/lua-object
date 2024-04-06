@@ -1,17 +1,24 @@
-local Object = require("Object")
+local Object = require('Object')
+
+-- -----------------------------------------------------------------------------
+-- Class
+-- -----------------------------------------------------------------------------
+
 local ClassMT = {}
 local Class = setmetatable({}, ClassMT)
-local InstanceMT = {
-	__call = function(self, ...)
-		return Object(self, ...)
-	end,
-}
+
+-- -----------------------------------------------------------------------------
+-- Constructor
+-- -----------------------------------------------------------------------------
+
+local InstanceMT = { __call = function(self, ...) return Object(self, ...) end }
+
 function ClassMT:__call(instance)
-	if instance == nil then
-		instance = {}
-	end
-	return setmetatable(instance, InstanceMT)
+  return setmetatable(instance or {}, InstanceMT)
 end
+
+-- -----------------------------------------------------------------------------
+-- Return
+-- -----------------------------------------------------------------------------
+
 return Class
--- Compiled with Erde 0.6.0-1
--- __ERDE_COMPILED__
